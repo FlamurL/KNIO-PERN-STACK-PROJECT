@@ -1,0 +1,224 @@
+* {
+  font-family: "Cal Sans", sans-serif;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+section {
+  min-height: 100vh;
+  padding: 4rem 0;
+  box-sizing: border-box;
+  width: 100%;
+  position: relative;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.6s ease-out forwards;
+  animation-play-state: paused;
+}
+
+section:where(.in-view) {
+  animation-play-state: running;
+}
+
+.nav-link {
+  font-size: 1.3rem;
+  margin: 0 5px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.nav-link.active {
+  font-weight: 700;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+.navbar-toggler {
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  padding: 0.5rem;
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+  outline: none;
+}
+
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    padding: 1rem 0;
+  }
+
+  .navbar-nav {
+    margin-top: 0.5rem;
+  }
+
+  .nav-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-item:last-child {
+    border-bottom: none;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 0.5rem 0;
+  }
+}
+
+.hero-section {
+  height: 500px;
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.9)
+    ),
+    center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  text-align: center;
+}
+
+.hero-content h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.facility-cards {
+  background-color: #f8f9fa;
+}
+
+.facility-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.facility-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  border-bottom: none;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.facility-icon {
+  color: #6c757d;
+  text-align: center;
+}
+
+.card-footer {
+  background-color: transparent;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.contact-section {
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.9)
+    ),
+    center/cover no-repeat;
+  min-height: auto !important;
+  padding: 6rem 0;
+}
+
+.contact-card {
+  border-radius: 10px;
+  border: none;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.contact-info {
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-info:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.contact-icon {
+  color: #0d6efd;
+  display: inline-block;
+}
+
+.form-control,
+.form-select {
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+}
+
+.form-control:focus,
+.form-select:focus {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  border-color: #86b7fe;
+}
+
+.form-control,
+.form-select {
+  transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 767.98px) {
+  .contact-section {
+    padding: 4rem 0;
+  }
+
+  .contact-info {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.btn-primary {
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+}

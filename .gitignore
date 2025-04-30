@@ -1,0 +1,7 @@
+.idea
+magacinBE/.idea
+magacinBE/node_modules
+magacinBE/dist
+magacinBE/coverage
+magacinBE/.env
+magacinBE/src/config/config.json
