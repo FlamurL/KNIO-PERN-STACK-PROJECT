@@ -53,7 +53,7 @@ const macedonianCities = [
   "Kriva Palanka",
 ];
 
-const SignUpForm: React.FC = () => {
+const SignUpAsAdmin: React.FC = () => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [loading, setLoading] = useState<LoadingState>({
@@ -323,7 +323,7 @@ const SignUpForm: React.FC = () => {
               <Link to="/">Go back to home page</Link>
             </div>
             <div className="linkss">
-              <Link to="/login">Already have an account? Sign in.</Link>
+              <Link to="/admin/login">Already have an account? Sign in.</Link>
             </div>
           </form>
         </div>
@@ -332,4 +332,4 @@ const SignUpForm: React.FC = () => {
   );
 };
 
-export default SignUpForm;
+export default SignUpAsAdmin;

@@ -44,7 +44,7 @@ const Navbar: React.FC = () => {
                 className={({ isActive }) =>
                   `nav-link ${isActive ? "active" : ""}`
                 }
-                to="/signup"
+                to="/user/signup"
                 onClick={closeNavbar}
               >
                 Sign Up
@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
                 className={({ isActive }) =>
                   `nav-link ${isActive ? "active" : ""}`
                 }
-                to="/login"
+                to="/user/login"
                 onClick={closeNavbar}
               >
                 Log In

@@ -9,11 +9,16 @@ export interface usersAttributes {
   isActive?: boolean;
   createdAt: Date;
   updatedAt: Date;
+  peopleInQueue?: number;
 }
 
 export type usersPk = 'id';
 export type usersId = users[usersPk];
-export type usersOptionalAttributes = 'name' | 'email' | 'isActive';
+export type usersOptionalAttributes =
+  | 'name'
+  | 'email'
+  | 'isActive'
+  | 'peopleInQueue';
 export type usersCreationAttributes = Optional<
   usersAttributes,
   usersOptionalAttributes
@@ -30,6 +35,7 @@ export class users
   isActive?: boolean;
   createdAt!: Date;
   updatedAt!: Date;
+  peopleInQueue?: number;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof users {
     return users.init(
@@ -63,6 +69,11 @@ export class users
         updatedAt: {
           type: DataTypes.DATE,
           allowNull: false,
+        },
+        peopleInQueue: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          defaultValue: 0,
         },
       },
       {

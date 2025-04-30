@@ -1,50 +1,81 @@
-import React, { useState } from "react";
-import "./login.css";
+import { useState, ChangeEvent, FormEvent } from "react";
+import "./login.css"; // Optional: if you want to style it with a CSS file
 
-const Login: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+interface FormData {
+  email: string;
+  password: string;
+  facility: string;
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
+const LoginForm = () => {
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    password: "",
+    facility: "",
+  });
+
+  const [success, setSuccess] = useState<boolean>(false);
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Logging in with:", { email, password });
+    console.log("Logging in with:", formData);
+    // You can send `formData` to your backend here
+    setSuccess(true);
   };
 
   return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h2>Login</h2>
+    <div className="loginForm">
+      <div>
+        <form onSubmit={handleSubmit}>
+          <fieldset>
+            {success && (
+              <div className="message success">
+                Log in successful! Thank you.
+              </div>
+            )}
 
-        <div className="input-group">
-          <label>Email</label>
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+            <h1>Log in</h1>
 
-        <div className="input-group">
-          <label>Password</label>
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+            <p>Email</p>
+            <input
+              type="text"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+            <br />
 
-        <button type="submit" className="login-btn">Login</button>
+            <p>Password</p>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <br />
 
-        <p className="signup-link">
-          Don't have an account? <a href="/signup">Sign up</a>
-        </p>
-      </form>
+            <p>Facility</p>
+            <input
+              type="text"
+              name="facility"
+              value={formData.facility}
+              onChange={handleChange}
+            />
+            <br />
+
+            <button type="submit" id="logInButton">
+              LOG IN
+            </button>
+          </fieldset>
+        </form>
+      </div>
     </div>
   );
 };
 
-export default Login;
+export default LoginForm;

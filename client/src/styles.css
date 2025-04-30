@@ -214,11 +214,16 @@ section:where(.in-view) {
   }
 }
 
-.btn-primary {
+.btn {
   transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+}
+
+.btn-success:hover {
   transform: translateY(-3px);
   box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
 }
