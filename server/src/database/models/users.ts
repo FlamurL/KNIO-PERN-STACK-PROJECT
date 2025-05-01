@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 
-export interface usersAttributes {
+export interface UsersAttributes {
   id: string;
   name?: string;
   email?: string;
@@ -12,21 +12,21 @@ export interface usersAttributes {
   peopleInQueue?: number;
 }
 
-export type usersPk = 'id';
-export type usersId = users[usersPk];
-export type usersOptionalAttributes =
+export type UsersPk = 'id';
+export type UsersId = Users[UsersPk];
+export type UsersOptionalAttributes =
   | 'name'
   | 'email'
   | 'isActive'
   | 'peopleInQueue';
-export type usersCreationAttributes = Optional<
-  usersAttributes,
-  usersOptionalAttributes
+export type UsersCreationAttributes = Optional<
+  UsersAttributes,
+  UsersOptionalAttributes
 >;
 
-export class users
-  extends Model<usersAttributes, usersCreationAttributes>
-  implements usersAttributes
+export class Users
+  extends Model<UsersAttributes, UsersCreationAttributes>
+  implements UsersAttributes
 {
   id!: string;
   name?: string;
@@ -37,8 +37,8 @@ export class users
   updatedAt!: Date;
   peopleInQueue?: number;
 
-  static initModel(sequelize: Sequelize.Sequelize): typeof users {
-    return users.init(
+  static initModel(sequelize: Sequelize.Sequelize): typeof Users {
+    return Users.init(
       {
         id: {
           type: DataTypes.UUID,
@@ -78,13 +78,13 @@ export class users
       },
       {
         sequelize,
-        tableName: 'users',
+        tableName: 'Users',
         schema: 'public',
         timestamps: false,
         freezeTableName: true,
         indexes: [
           {
-            name: 'users_pkey',
+            name: 'Users_pkey',
             unique: true,
             fields: [{ name: 'id' }],
           },

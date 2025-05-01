@@ -5,7 +5,7 @@ const { DataTypes } = require('sequelize');
 module.exports = {
   async up(queryInterface, Sequelize) {
     try {
-      await queryInterface.createTable('admin', {
+      await queryInterface.createTable('Admin', {
         id: {
           type: DataTypes.UUID,
           primaryKey: true,
@@ -61,6 +61,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('admin');
+    await queryInterface.dropTable('Admin');
   },
 };

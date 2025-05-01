@@ -2,7 +2,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.addColumn('Users', 'peopleInQueue', {
+    await queryInterface.addColumn('Admin', 'peopleInQueue', {
       type: Sequelize.INTEGER,
       allowNull: true, // Set to `false` if the column should not allow null values
       defaultValue: 0, // Optional: Set a default value, e.g., 0
@@ -10,6 +10,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('Users', 'peopleInQueue');
+    await queryInterface.removeColumn('Admin', 'peopleInQueue');
   },
 };

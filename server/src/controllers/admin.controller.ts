@@ -6,12 +6,12 @@ import { encrypt, validateUser } from '../encrypt/encrypt.string.compare';
 
 dotenv.config();
 
-export const authenticateUser: RequestHandler = async (req, res, next) => {
+export const authenticateAdmin: RequestHandler = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    const users = await db.Users.findAll({ where: { email } });
+    const { email, password, facilityName } = req.body;
+    const admin = await db.admin.findAll({ where: { email, facilityName } });
 
-    if (!users.length) {
+    if (!admin.length) {
       res.status(401).json({
         status: 'error',
         message: 'Invalid credentials',
@@ -19,7 +19,7 @@ export const authenticateUser: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    const user = users[0];
+    const user = admin[0];
     const match = await validateUser(user.password, password);
     if (!match) {
       res.status(401).json({
@@ -33,6 +33,7 @@ export const authenticateUser: RequestHandler = async (req, res, next) => {
     res.json({
       name: user.name,
       email: user.email,
+      facilityName: user.facilityName,
       token,
     });
     return;
@@ -41,15 +42,29 @@ export const authenticateUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const registerUser: RequestHandler = async (req, res, next) => {
+export const registerAdmin: RequestHandler = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
-    const hash = await encrypt(password);
-    await db.Users.create({
-      name,
+    const {
+      facilityName,
+      facilityAddress,
+      zipCode,
+      country,
+      city,
       email,
-      passwordHash: hash,
-      isActive: true,
+      password,
+      waitingTime,
+    } = req.body;
+    const hash = await encrypt(password);
+    console.log(1111, db.Admin);
+    await db.Admin.create({
+      facilityName,
+      facilityAddress,
+      zipCode,
+      country,
+      city,
+      email,
+      password,
+      waitingTime,
       peopleInQueue: 0,
     });
 

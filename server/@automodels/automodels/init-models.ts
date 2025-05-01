@@ -1,35 +1,35 @@
 import type { Sequelize } from "sequelize";
+import { Admin as _Admin } from "./Admin";
+import type { AdminAttributes, AdminCreationAttributes } from "./Admin";
 import { SequelizeMeta as _SequelizeMeta } from "./SequelizeMeta";
 import type { SequelizeMetaAttributes, SequelizeMetaCreationAttributes } from "./SequelizeMeta";
-import { admin as _admin } from "./admin";
-import type { adminAttributes, adminCreationAttributes } from "./admin";
-import { users as _users } from "./users";
-import type { usersAttributes, usersCreationAttributes } from "./users";
+import { Users as _Users } from "./Users";
+import type { UsersAttributes, UsersCreationAttributes } from "./Users";
 
 export {
+  _Admin as Admin,
   _SequelizeMeta as SequelizeMeta,
-  _admin as admin,
-  _users as users,
+  _Users as Users,
 };
 
 export type {
+  AdminAttributes,
+  AdminCreationAttributes,
   SequelizeMetaAttributes,
   SequelizeMetaCreationAttributes,
-  adminAttributes,
-  adminCreationAttributes,
-  usersAttributes,
-  usersCreationAttributes,
+  UsersAttributes,
+  UsersCreationAttributes,
 };
 
 export function initModels(sequelize: Sequelize) {
+  const Admin = _Admin.initModel(sequelize);
   const SequelizeMeta = _SequelizeMeta.initModel(sequelize);
-  const admin = _admin.initModel(sequelize);
-  const users = _users.initModel(sequelize);
+  const Users = _Users.initModel(sequelize);
 
 
   return {
+    Admin: Admin,
     SequelizeMeta: SequelizeMeta,
-    admin: admin,
-    users: users,
+    Users: Users,
   };
 }

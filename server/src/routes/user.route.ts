@@ -1,10 +1,11 @@
-import express from 'express';
-import { getUsers, getUserById, createUser } from '../controllers/user.controller';
+// user.route.ts
+import { Router } from 'express';
+import { authenticateUser, registerUser } from '../controllers/user.controller';
 
-const router = express.Router();
+const router = Router();
 
-router.get('/', getUsers);
-router.get('/:id', getUserById);
-router.post('/', createUser);
+// ✓ Use POST so that req.body is populated
+router.post('/login', authenticateUser);
+router.post('/register', registerUser);
 
 export default router;
