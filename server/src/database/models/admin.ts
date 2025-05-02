@@ -1,3 +1,4 @@
+// models/admin.ts
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 
@@ -52,6 +53,7 @@ export class Admin
           type: DataTypes.UUID,
           allowNull: false,
           primaryKey: true,
+          defaultValue: DataTypes.UUIDV4, // Auto-generate UUID
         },
         facilityName: {
           type: DataTypes.STRING(255),
@@ -88,10 +90,12 @@ export class Admin
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false,
+          defaultValue: DataTypes.NOW,
         },
         updatedAt: {
           type: DataTypes.DATE,
           allowNull: false,
+          defaultValue: DataTypes.NOW,
         },
         peopleInQueue: {
           type: DataTypes.INTEGER,
@@ -103,7 +107,7 @@ export class Admin
         sequelize,
         tableName: 'Admin',
         schema: 'public',
-        timestamps: false,
+        timestamps: true, // Enable timestamps for createdAt/updatedAt
         freezeTableName: true,
         indexes: [
           {
@@ -116,3 +120,5 @@ export class Admin
     );
   }
 }
+
+export default Admin; // Add default export

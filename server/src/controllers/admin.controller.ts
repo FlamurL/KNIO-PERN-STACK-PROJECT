@@ -1,15 +1,17 @@
 import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { db } from '../database/models';
+import { getDb } from '../database/models'; // Adjust path if needed
 import { encrypt, validateUser } from '../encrypt/encrypt.string.compare';
 
 dotenv.config();
 
 export const authenticateAdmin: RequestHandler = async (req, res, next) => {
   try {
+    const db = await getDb(); // Wait for db to initialize
     const { email, password, facilityName } = req.body;
-    const admin = await db.admin.findAll({ where: { email, facilityName } });
+    console.log('Available models in authenticateAdmin:', Object.keys(db)); // Debug
+    const admin = await db.Admin.findAll({ where: { email, facilityName } });
 
     if (!admin.length) {
       res.status(401).json({
@@ -31,7 +33,6 @@ export const authenticateAdmin: RequestHandler = async (req, res, next) => {
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET!);
     res.json({
-      name: user.name,
       email: user.email,
       facilityName: user.facilityName,
       token,
@@ -44,6 +45,7 @@ export const authenticateAdmin: RequestHandler = async (req, res, next) => {
 
 export const registerAdmin: RequestHandler = async (req, res, next) => {
   try {
+    const db = await getDb(); // Wait for db to initialize
     const {
       facilityName,
       facilityAddress,
@@ -55,7 +57,8 @@ export const registerAdmin: RequestHandler = async (req, res, next) => {
       waitingTime,
     } = req.body;
     const hash = await encrypt(password);
-    console.log(1111, db.Admin);
+    console.log('Available models in registerAdmin:', Object.keys(db)); // Debug
+    console.log(1111, db.Admin); // Debug
     await db.Admin.create({
       facilityName,
       facilityAddress,
@@ -63,7 +66,7 @@ export const registerAdmin: RequestHandler = async (req, res, next) => {
       country,
       city,
       email,
-      password,
+      password: hash,
       waitingTime,
       peopleInQueue: 0,
     });
