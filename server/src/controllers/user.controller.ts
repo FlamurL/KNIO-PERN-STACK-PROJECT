@@ -1,16 +1,16 @@
 import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { getDb } from '../database/models'; // Adjust path if needed
+import { getDb } from '../database/models';
 import { encrypt, validateUser } from '../encrypt/encrypt.string.compare';
 
 dotenv.config();
 
 export const authenticateUser: RequestHandler = async (req, res, next) => {
   try {
-    const db = await getDb(); // Wait for db to initialize
+    const db = await getDb();
     const { email, password } = req.body;
-    console.log('Available models in authenticateUser:', Object.keys(db)); // Debug
+    console.log('Available models in authenticateUser:', Object.keys(db));
     const users = await db.Users.findAll({ where: { email } });
 
     if (!users.length) {
@@ -22,7 +22,7 @@ export const authenticateUser: RequestHandler = async (req, res, next) => {
     }
 
     const user = users[0];
-    const match = await validateUser(user.passwordHash, password); // Use passwordHash
+    const match = await validateUser(user.passwordHash, password);
     if (!match) {
       res.status(401).json({
         status: 'error',
@@ -45,22 +45,24 @@ export const authenticateUser: RequestHandler = async (req, res, next) => {
 
 export const registerUser: RequestHandler = async (req, res, next) => {
   try {
-    const db = await getDb(); // Wait for db to initialize
-    const { name, email, password } = req.body;
+    const db = await getDb();
+    const { name, email, password, isActive } = req.body;
     const hash = await encrypt(password);
-    console.log('Available models in registerUser:', Object.keys(db)); // Debug
-    console.log('db.Users:', db.Users); // Debug
-    await db.Users.create({
+    console.log('Available models in registerUser:', Object.keys(db));
+    console.log('db.Users:', db.Users);
+    const userData = {
       name,
       email,
-      passwordHash: hash, // Use passwordHash to match model
-      isActive: true,
+      passwordHash: hash,
+      isActive: isActive ?? true, // Use provided isActive or default to true
       peopleInQueue: 0,
-    });
-
+    };
+    console.log('Creating user with data:', userData); // Debug
+    await db.Users.create(userData);
     res.status(201).json({ status: 'ok' });
     return;
   } catch (err) {
+    console.error('Error in registerUser:', err); // Log full error
     next(err);
   }
 };

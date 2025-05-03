@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./signup.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // Define interfaces for type safety
 interface FormData {
@@ -72,6 +73,7 @@ const SignUpAsAdmin: React.FC = () => {
     password: "",
     waitingTime: 0,
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -108,7 +110,10 @@ const SignUpAsAdmin: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: name === "waitingTime" ? Number(value) : value,
+    }));
   };
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -117,13 +122,11 @@ const SignUpAsAdmin: React.FC = () => {
       ...prevData,
       country: selectedCountry,
       city: "",
-    })); // Reset city when country changes
+    }));
 
     if (selectedCountry === "MK") {
-      // If Macedonia is selected, use the static list of cities
       setCities(macedonianCities);
     } else {
-      // For other countries, use the API's capital city (or modify as needed)
       const selectedCountryData = countries.find(
         (c) => c.iso2 === selectedCountry
       );
@@ -138,18 +141,28 @@ const SignUpAsAdmin: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { facilityName, facilityAddress, zipCode, country, email, password } =
-      formData;
+    const {
+      facilityName,
+      facilityAddress,
+      zipCode,
+      country,
+      city,
+      email,
+      password,
+      waitingTime,
+    } = formData;
 
     if (
       !facilityName ||
       !facilityAddress ||
       !zipCode ||
       !country ||
+      !city ||
       !email ||
-      !password
+      !password ||
+      waitingTime <= 0
     ) {
-      setError("Please fill all required fields");
+      setError("Please fill all required fields with valid values");
       return;
     }
 
@@ -160,25 +173,52 @@ const SignUpAsAdmin: React.FC = () => {
 
     setLoading((prev) => ({ ...prev, submission: true }));
     setError(null);
+    setSuccess(false);
 
     try {
-      console.log("Submitting form data:", formData);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setSuccess(true);
+      console.log("Sending form data:", formData);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/admin/register`,
+        {
+          facilityName,
+          facilityAddress,
+          zipCode,
+          country,
+          city,
+          email,
+          password,
+          waitingTime,
+        }
+      );
 
-      setFormData({
-        facilityName: "",
-        facilityAddress: "",
-        zipCode: "",
-        country: "",
-        city: "",
-        email: "",
-        password: "",
-        waitingTime: 0,
-      });
-      setCities([]);
-    } catch (err: unknown) {
-      setError("Failed to submit form. Please try again.");
+      if (response.status === 201 && response.data.status === "ok") {
+        setSuccess(true);
+        setFormData({
+          facilityName: "",
+          facilityAddress: "",
+          zipCode: "",
+          country: "",
+          city: "",
+          email: "",
+          password: "",
+          waitingTime: 0,
+        });
+        setCities([]);
+        setTimeout(() => {
+          navigate("/");
+        }, 1500);
+      } else {
+        throw new Error("Unexpected response from server");
+      }
+    } catch (err: any) {
+      if (axios.isAxiosError(err) && err.response) {
+        setError(
+          err.response.data.message ||
+            "Failed to register admin. Please try again."
+        );
+      } else {
+        setError("Failed to connect to the server. Please try again.");
+      }
     } finally {
       setLoading((prev) => ({ ...prev, submission: false }));
     }
@@ -190,7 +230,7 @@ const SignUpAsAdmin: React.FC = () => {
         <div className="form-container">
           {success && (
             <div className="message success">
-              Registration successful! Thank you.
+              Registration successful! Redirecting to homepage...
             </div>
           )}
 
@@ -301,7 +341,9 @@ const SignUpAsAdmin: React.FC = () => {
               />
             </div>
             <div className="input-group">
-              <label htmlFor="waitingTime">Time needed for person</label>
+              <label htmlFor="waitingTime">
+                Time needed for person (minutes)
+              </label>
               <input
                 type="number"
                 id="waitingTime"
@@ -309,6 +351,7 @@ const SignUpAsAdmin: React.FC = () => {
                 value={formData.waitingTime}
                 onChange={handleChange}
                 className="input"
+                min="1"
                 required
               />
             </div>
@@ -317,7 +360,7 @@ const SignUpAsAdmin: React.FC = () => {
               className="submit-button"
               disabled={loading.submission}
             >
-              Submit
+              {loading.submission ? "Submitting..." : "Submit"}
             </button>
             <div className="linkss">
               <Link to="/">Go back to home page</Link>

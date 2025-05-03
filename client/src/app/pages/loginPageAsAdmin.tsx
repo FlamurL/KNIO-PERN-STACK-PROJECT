@@ -1,10 +1,10 @@
 import React from "react";
-import LoginAsAdmin from "../components/loginAsAdmin/login";
+import AdminLogin from "../components/loginAsAdmin/login";
 
 const loginPageAsAdmin: React.FC = () => {
   return (
     <div>
-      <LoginAsAdmin />
+      <AdminLogin />
     </div>
   );
 };
