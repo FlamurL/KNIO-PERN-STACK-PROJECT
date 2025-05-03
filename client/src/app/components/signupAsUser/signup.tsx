@@ -1,22 +1,24 @@
 import { useState, ChangeEvent, FormEvent } from "react";
-import "./signup.css"; // Keep using your existing CSS file if styles are shared
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./signup.css";
 
 interface FormData {
-  username: string;
+  name: string;
   email: string;
   password: string;
 }
 
-const SignUpAsUser = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<boolean>(false);
+const SignUpAsUser: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
-    username: "",
+    name: "",
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -26,10 +28,10 @@ const SignUpAsUser = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { username, email, password } = formData;
+    const { name, email, password } = formData;
 
-    if (!username || !email || !password) {
-      setError("Please fill all fields");
+    if (!name || !email || !password) {
+      setError("Please fill all required fields");
       return;
     }
 
@@ -38,82 +40,113 @@ const SignUpAsUser = () => {
       return;
     }
 
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
     setLoading(true);
     setError(null);
+    setSuccess(false);
 
     try {
-      // HERE YOU CAN SEND THE DATA TO THE BACKEND
       console.log("Submitting form data:", formData);
-      // SIMULATE BACKEND CALL
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setSuccess(true);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/users/register`,
+        { name, email, password }
+      );
 
-      setFormData({
-        username: "",
-        email: "",
-        password: "",
-      });
-    } catch (err) {
-      setError("Failed to submit form. Please try again.");
+      if (response.status === 201 && response.data.status === "ok") {
+        setSuccess(true);
+        setFormData({ name: "", email: "", password: "" });
+        setTimeout(() => {
+          navigate("/");
+        }, 1500);
+      } else {
+        throw new Error("Unexpected response from server");
+      }
+    } catch (err: any) {
+      if (axios.isAxiosError(err) && err.response) {
+        setError(
+          err.response.data.message ||
+            "Failed to register user. Please try again."
+        );
+      } else {
+        setError("Failed to connect to the server. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="form-container">
-      {success && (
-        <div className="message success">
-          Registration successful! Thank you.
-        </div>
-      )}
+    <div className="signup-container">
+      <div className="signup-root">
+        <div className="form-container">
+          {success && (
+            <div className="message success">
+              Registration successful! Redirecting to homepage...
+            </div>
+          )}
 
-      {error && <div className="message error">{error}</div>}
+          {error && <div className="message error">{error}</div>}
 
-      {loading && <div className="loading">Processing...</div>}
+          {loading && (
+            <div className="loading" aria-live="polite">
+              Processing...
+            </div>
+          )}
 
-      <form onSubmit={handleSubmit} className="sign-up-form">
-        <h2>Sign Up</h2>
-        <div className="input-group">
-          <label>Username</label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            className="input"
-          />
+          <form onSubmit={handleSubmit} className="sign-up-form">
+            <h2>Sign Up to QLine</h2>
+            <div className="input-group">
+              <label htmlFor="name">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="input"
+                required
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="input"
+                required
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="input"
+                required
+              />
+            </div>
+            <button type="submit" className="submit-button" disabled={loading}>
+              {loading ? "Submitting..." : "Submit"}
+            </button>
+            <div className="linkss">
+              <Link to="/">Go back to home page</Link>
+            </div>
+            <div className="linkss">
+              <Link to="/user/login">Already have an account? Sign in.</Link>
+            </div>
+          </form>
         </div>
-        <div className="input-group">
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="input"
-          />
-        </div>
-        <div className="input-group">
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="input"
-          />
-        </div>
-        <button type="submit" className="submit-button" disabled={loading}>
-          Submit
-        </button>
-        <div className="linkss">
-          <Link to="/">Go back to home page</Link>
-        </div>
-        <div className="linkss">
-          <Link to="/user/login">Already have an account? Sign in.</Link>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };
