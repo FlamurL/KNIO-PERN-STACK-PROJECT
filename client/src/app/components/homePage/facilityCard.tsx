@@ -1,29 +1,28 @@
 import React, { useEffect, useRef } from "react";
 
 interface FacilityCardProps {
-  title: string;
-  headerClass: string;
-  icon: React.ReactNode;
+  facilityName: string | null;
   country: string;
   city: string;
-  address: string;
-  services: string;
-  description: string;
-  buttonClass: string;
+  address: string | null;
 }
 
 const FacilityCard: React.FC<FacilityCardProps> = ({
-  title,
-  headerClass,
-  icon,
+  facilityName,
   country,
   city,
   address,
-  services,
-  description,
-  buttonClass,
 }) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
+
+  // Check if user is logged in by checking for userToken in localStorage
+  const isLoggedIn = !!localStorage.getItem("userToken");
+
+  // Handle click on disabled button
+  const handleDisabledClick = () => {
+    alert("To be able to view details you have to sign in");
+    console.log(1111);
+  };
 
   useEffect(() => {
     const card = cardRef.current;
@@ -48,11 +47,25 @@ const FacilityCard: React.FC<FacilityCardProps> = ({
   return (
     <div className="col-md-6 col-lg-4">
       <div className="card h-100 facility-card" ref={cardRef}>
-        <div className={`card-header ${headerClass}`}>
-          <h5 className="card-title mb-0 text-center">{title}</h5>
+        <div className="card-header bg-primary text-white">
+          <h5 className="card-title mb-0 text-center">
+            {facilityName || "Unnamed Facility"}
+          </h5>
         </div>
         <div className="card-body">
-          <div className="facility-icon mb-3">{icon}</div>
+          <div className="facility-icon mb-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="40"
+              height="40"
+              fill="currentColor"
+              className="bi bi-building"
+              viewBox="0 0 16 16"
+            >
+              <path d="M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zm.5.5h7v10h-7z" />
+              <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm13 10V4a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1" />
+            </svg>
+          </div>
           <ul className="list-unstyled">
             <li>
               <strong>Country:</strong> {country}
@@ -61,18 +74,18 @@ const FacilityCard: React.FC<FacilityCardProps> = ({
               <strong>City:</strong> {city}
             </li>
             <li>
-              <strong>Address:</strong> {address}
-            </li>
-            <li>
-              <strong>Services:</strong> {services}
+              <strong>Address:</strong> {address || "No address provided"}
             </li>
           </ul>
-          <p className="card-text">{description}</p>
         </div>
         <div className="card-footer">
-          <a href="#" className={`btn ${buttonClass} btn-sm`}>
+          <button
+            className="btn btn-outline-primary btn-sm"
+            disabled={!isLoggedIn}
+            onClick={!isLoggedIn ? handleDisabledClick : undefined}
+          >
             View Details
-          </a>
+          </button>
         </div>
       </div>
     </div>

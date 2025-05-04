@@ -227,3 +227,17 @@ section:where(.in-view) {
   transform: translateY(-3px);
   box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
 }
+.icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.icon i {
+  font-size: 1.4em;
+  padding: 0.2rem;
+  color: #fff;
+  text-decoration: none;
+}
