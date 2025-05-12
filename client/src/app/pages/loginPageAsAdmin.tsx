@@ -1,12 +1,22 @@
 import React from "react";
-import AdminLogin from "../components/loginAsAdmin/login";
+import AdminLogin from "../components/loginAsAdmin/login"; // Assuming AdminLogin component is in this path
 
-const loginPageAsAdmin: React.FC = () => {
+interface LoginPageAsAdminProps {
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setUserRole: React.Dispatch<
+    React.SetStateAction<"user" | "admin" | undefined>
+  >;
+}
+
+const LoginPageAsAdmin: React.FC<LoginPageAsAdminProps> = ({
+  setLoggedIn,
+  setUserRole,
+}) => {
   return (
     <div>
-      <AdminLogin />
+      <AdminLogin setLoggedIn={setLoggedIn} setUserRole={setUserRole} />
     </div>
   );
 };
 
-export default loginPageAsAdmin;
+export default LoginPageAsAdmin;

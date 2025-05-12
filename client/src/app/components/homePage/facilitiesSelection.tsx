@@ -7,6 +7,18 @@ interface Facility {
   country: string;
   city: string;
   address: string | null;
+  id: string;
+}
+
+interface FacilitiesResponse {
+  status: string;
+  data: {
+    id: string;
+    facilityName: string | null;
+    country: string;
+    city: string;
+    facilityAddress: string | null;
+  }[];
 }
 
 const FacilitiesSection: React.FC = () => {
@@ -21,22 +33,17 @@ const FacilitiesSection: React.FC = () => {
       setError(null);
 
       try {
-        console.log(
-          "Fetching from:",
+        const response = await axios.get<FacilitiesResponse>(
           `${process.env.REACT_APP_API_URL}/api/admin`
         );
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/admin`
-        );
-
-        console.log("Response:", response);
 
         if (response.status === 200) {
-          const data = response.data.data.map((item: any) => ({
+          const data = response.data.data.map((item) => ({
             facilityName: item.facilityName || null,
             country: item.country,
             city: item.city,
             address: item.facilityAddress || null,
+            id: item.id,
           }));
           setFacilities(data);
         } else {
@@ -101,8 +108,15 @@ const FacilitiesSection: React.FC = () => {
           </div>
         )}
         <div className="row g-4">
-          {facilities.map((facility, index) => (
-            <FacilityCard key={index} {...facility} />
+          {facilities.map((facility) => (
+            <FacilityCard
+              key={facility.id}
+              facilityName={facility.facilityName}
+              country={facility.country}
+              city={facility.city}
+              address={facility.address}
+              facilityId={facility.id}
+            />
           ))}
         </div>
       </div>

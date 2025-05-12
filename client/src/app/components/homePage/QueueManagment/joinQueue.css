@@ -1,0 +1,261 @@
+:root {
+  --primary-color: #4f46e5;
+  --primary-light: #eef2ff;
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  --neutral-color: #f3f4f6;
+  --text-color: #1f2937;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --radius: 8px;
+}
+
+.join-queue-body-queue {
+  background-color: #f9fafb;
+  color: var(--text-color);
+  line-height: 1.6;
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.navbar-queue {
+  background-color: white;
+  padding: 1rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.nav-button-queue {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.875rem;
+}
+
+.nav-button-queue:hover {
+  background-color: #4338ca;
+}
+
+.h1-queue {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.facility-name-queue {
+  color: #333;
+}
+
+.alert-queue {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: var(--radius);
+}
+
+.container-queue {
+  background-color: white;
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+}
+
+.form-group-queue {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+}
+
+.form-header-queue {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.label-queue {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #4b5563;
+}
+
+.user-name-queue {
+  font-weight: bold;
+}
+
+.login-link-queue {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.login-link-queue:hover {
+  text-decoration: underline;
+}
+
+.dashboard-link-queue {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 1rem;
+  width: 200px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.dashboard-link-queue:hover {
+  background-color: #4338ca;
+}
+
+.btn-queue {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.btn-queue:hover {
+  background-color: #4338ca;
+}
+
+.stats-queue {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.stat-card-queue {
+  flex: 1;
+  background-color: white;
+  padding: 1rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.stat-label-queue {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value-queue {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.time-to-wait-queue {
+  font-size: inherit;
+}
+
+.table-queue {
+  width: 100;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  background-color: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.table-header-queue {
+  background-color: var(--primary-light);
+}
+
+.table-body-queue {
+  /* No additional styles needed, but included for consistency */
+}
+
+.th-queue {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  font-weight: 600;
+  text-align: left;
+  padding: 1rem;
+}
+
+.td-queue {
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.queue-btn-queue {
+  background-color: var(--danger-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.queue-btn-queue:hover {
+  background-color: #dc2626;
+}
+
+.person-row-queue {
+  transition: background-color 0.3s;
+}
+
+.person-waiting-queue {
+  background-color: #ecfdf5;
+}
+
+.person-removed-queue {
+  background-color: #f3f4f6;
+}
+
+@media (max-width: 640px) {
+  .join-queue-body-queue {
+    padding: 1rem;
+  }
+
+  .navbar-queue {
+    padding: 0.75rem;
+  }
+
+  .nav-button-queue {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .stats-queue {
+    flex-direction: column;
+  }
+
+  .th-queue,
+  .td-queue {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .btn-queue,
+  .queue-btn-queue {
+    padding: 0.5rem;
+  }
+}

@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./login.css";
@@ -13,7 +13,17 @@ interface LoadingState {
   submission: boolean;
 }
 
-const AdminLogin: React.FC = () => {
+export interface AdminLoginProps {
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setUserRole: React.Dispatch<
+    React.SetStateAction<"user" | "admin" | undefined>
+  >;
+}
+
+const AdminLogin: React.FC<AdminLoginProps> = ({
+  setLoggedIn,
+  setUserRole,
+}) => {
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -48,22 +58,30 @@ const AdminLogin: React.FC = () => {
     setSuccess(false);
 
     try {
-      console.log("Logging in with:", formData);
+      console.log("Sending login request:", { email, facilityName });
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/admin/login`,
         { email, password, facilityName }
       );
+      console.log("Login response:", response.data);
 
       if (response.status === 200 && response.data.token) {
+        localStorage.setItem("adminToken", response.data.token);
+        localStorage.setItem("userName", response.data.name || "Admin");
+        localStorage.setItem("userRole", response.data.role || "admin");
+        localStorage.setItem("facilityId", response.data.facilityId);
+        setLoggedIn(true);
+        setUserRole("admin");
         setSuccess(true);
         setFormData({ email: "", password: "", facilityName: "" });
         setTimeout(() => {
-          navigate("/");
+          navigate(`/admin/home?facilityId=${response.data.facilityId}`);
         }, 1500);
       } else {
         throw new Error("Unexpected response from server");
       }
     } catch (err: any) {
+      console.error("Login error:", err.response?.data);
       if (axios.isAxiosError(err) && err.response) {
         setError(
           err.response.data.message || "Failed to log in. Please try again."
@@ -82,7 +100,7 @@ const AdminLogin: React.FC = () => {
         <div className="form-container">
           {success && (
             <div className="message success">
-              Login successful! Redirecting to homepage...
+              Login successful! Redirecting to admin home...
             </div>
           )}
 
@@ -95,7 +113,7 @@ const AdminLogin: React.FC = () => {
           )}
 
           <form onSubmit={handleSubmit} className="login-form">
-            <h2>Log In to QLine</h2>
+            <h2>Log In to QLine (Admin)</h2>
             <div className="input-group">
               <label htmlFor="facilityName">Facility Name</label>
               <input

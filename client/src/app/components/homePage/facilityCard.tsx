@@ -1,10 +1,12 @@
 import React, { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface FacilityCardProps {
   facilityName: string | null;
   country: string;
   city: string;
   address: string | null;
+  facilityId: string;
 }
 
 const FacilityCard: React.FC<FacilityCardProps> = ({
@@ -12,16 +14,20 @@ const FacilityCard: React.FC<FacilityCardProps> = ({
   country,
   city,
   address,
+  facilityId,
 }) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
-  // Check if user is logged in by checking for userToken in localStorage
   const isLoggedIn = !!localStorage.getItem("userToken");
 
-  // Handle click on disabled button
-  const handleDisabledClick = () => {
-    alert("To be able to view details you have to sign in");
-    console.log(1111);
+  const handleViewDetails = () => {
+    if (isLoggedIn) {
+      navigate(`/user/queue?facilityId=${facilityId}`);
+    } else {
+      alert("Please sign in to view queue details.");
+      navigate("/user/login");
+    }
   };
 
   useEffect(() => {
@@ -81,10 +87,9 @@ const FacilityCard: React.FC<FacilityCardProps> = ({
         <div className="card-footer">
           <button
             className="btn btn-outline-primary btn-sm"
-            disabled={!isLoggedIn}
-            onClick={!isLoggedIn ? handleDisabledClick : undefined}
+            onClick={handleViewDetails}
           >
-            View Details
+            View Queue
           </button>
         </div>
       </div>

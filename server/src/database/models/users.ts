@@ -1,20 +1,27 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
+import type { Admin, AdminId } from './admin';
 
 export interface UsersAttributes {
   id: string;
-  name: string;
-  email: string;
+  name?: string;
+  email?: string;
   passwordHash: string;
-  isActive: boolean;
+  isActive?: boolean;
   createdAt: Date;
   updatedAt: Date;
   peopleInQueue?: number;
+  currentQueueId?: string;
 }
 
 export type UsersPk = 'id';
 export type UsersId = Users[UsersPk];
-export type UsersOptionalAttributes = 'peopleInQueue';
+export type UsersOptionalAttributes =
+  | 'name'
+  | 'email'
+  | 'isActive'
+  | 'peopleInQueue'
+  | 'currentQueueId';
 export type UsersCreationAttributes = Optional<
   UsersAttributes,
   UsersOptionalAttributes
@@ -25,16 +32,22 @@ export class Users
   implements UsersAttributes
 {
   id!: string;
-  name!: string;
-  email!: string;
+  name?: string;
+  email?: string;
   passwordHash!: string;
-  isActive!: boolean;
+  isActive?: boolean;
   createdAt!: Date;
   updatedAt!: Date;
   peopleInQueue?: number;
+  currentQueueId?: string;
+
+  // Users belongsTo Admin via currentQueueId
+  currentQueue!: Admin;
+  getCurrentQueue!: Sequelize.BelongsToGetAssociationMixin<Admin>;
+  setCurrentQueue!: Sequelize.BelongsToSetAssociationMixin<Admin, AdminId>;
+  createCurrentQueue!: Sequelize.BelongsToCreateAssociationMixin<Admin>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof Users {
-    console.log('Users.initModel called'); // Debug
     return Users.init(
       {
         id: {
@@ -45,12 +58,11 @@ export class Users
         },
         name: {
           type: DataTypes.STRING(255),
-          allowNull: false,
+          allowNull: true,
         },
         email: {
           type: DataTypes.STRING(255),
-          allowNull: false,
-          unique: true,
+          allowNull: true,
         },
         passwordHash: {
           type: DataTypes.STRING(255),
@@ -58,47 +70,54 @@ export class Users
         },
         isActive: {
           type: DataTypes.BOOLEAN,
-          allowNull: false,
+          allowNull: true,
           defaultValue: true,
+        },
+        createdAt: {
+          type: DataTypes.DATE,
+          allowNull: false,
+        },
+        updatedAt: {
+          type: DataTypes.DATE,
+          allowNull: false,
         },
         peopleInQueue: {
           type: DataTypes.INTEGER,
           allowNull: true,
           defaultValue: 0,
         },
-        createdAt: {
-          type: DataTypes.DATE,
-          allowNull: false,
-          defaultValue: DataTypes.NOW,
-        },
-        updatedAt: {
-          type: DataTypes.DATE,
-          allowNull: false,
-          defaultValue: DataTypes.NOW,
+        currentQueueId: {
+          type: DataTypes.UUID,
+          allowNull: true,
+          references: {
+            model: 'Admin',
+            key: 'id',
+          },
         },
       },
       {
         sequelize,
-        modelName: 'Users',
         tableName: 'Users',
         schema: 'public',
-        timestamps: true, // Let Sequelize manage createdAt/updatedAt
+        timestamps: true,
         freezeTableName: true,
         indexes: [
           {
-            name: 'Users_pkey',
-            unique: true,
-            fields: [{ name: 'id' }],
+            name: 'Users_currentQueueId_fk',
+            fields: [{ name: 'currentQueueId' }],
           },
           {
             name: 'Users_email_unique',
             unique: true,
             fields: [{ name: 'email' }],
           },
+          {
+            name: 'Users_pkey',
+            unique: true,
+            fields: [{ name: 'id' }],
+          },
         ],
       }
     );
   }
 }
-
-export default Users;

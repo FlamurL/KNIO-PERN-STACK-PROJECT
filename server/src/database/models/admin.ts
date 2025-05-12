@@ -1,6 +1,6 @@
-// models/admin.ts
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
+import type { Users, UsersId } from './users';
 
 export interface AdminAttributes {
   id: string;
@@ -46,6 +46,19 @@ export class Admin
   updatedAt!: Date;
   peopleInQueue?: number;
 
+  // Admin hasMany Users via currentQueueId
+  Users!: Users[];
+  getUsers!: Sequelize.HasManyGetAssociationsMixin<Users>;
+  setUsers!: Sequelize.HasManySetAssociationsMixin<Users, UsersId>;
+  addUser!: Sequelize.HasManyAddAssociationMixin<Users, UsersId>;
+  addUsers!: Sequelize.HasManyAddAssociationsMixin<Users, UsersId>;
+  createUser!: Sequelize.HasManyCreateAssociationMixin<Users>;
+  removeUser!: Sequelize.HasManyRemoveAssociationMixin<Users, UsersId>;
+  removeUsers!: Sequelize.HasManyRemoveAssociationsMixin<Users, UsersId>;
+  hasUser!: Sequelize.HasManyHasAssociationMixin<Users, UsersId>;
+  hasUsers!: Sequelize.HasManyHasAssociationsMixin<Users, UsersId>;
+  countUsers!: Sequelize.HasManyCountAssociationsMixin;
+
   static initModel(sequelize: Sequelize.Sequelize): typeof Admin {
     return Admin.init(
       {
@@ -53,7 +66,7 @@ export class Admin
           type: DataTypes.UUID,
           allowNull: false,
           primaryKey: true,
-          defaultValue: DataTypes.UUIDV4, // Auto-generate UUID
+          defaultValue: DataTypes.UUIDV4,
         },
         facilityName: {
           type: DataTypes.STRING(255),
@@ -90,12 +103,10 @@ export class Admin
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false,
-          defaultValue: DataTypes.NOW,
         },
         updatedAt: {
           type: DataTypes.DATE,
           allowNull: false,
-          defaultValue: DataTypes.NOW,
         },
         peopleInQueue: {
           type: DataTypes.INTEGER,
@@ -107,7 +118,7 @@ export class Admin
         sequelize,
         tableName: 'Admin',
         schema: 'public',
-        timestamps: true, // Enable timestamps for createdAt/updatedAt
+        timestamps: true,
         freezeTableName: true,
         indexes: [
           {
@@ -120,5 +131,3 @@ export class Admin
     );
   }
 }
-
-export default Admin; // Add default export

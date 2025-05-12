@@ -14,7 +14,17 @@ interface LoadingState {
   submission: boolean;
 }
 
-const LoginAsUser: React.FC = () => {
+interface LoginPageAsUserProps {
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setUserRole: React.Dispatch<
+    React.SetStateAction<"user" | "admin" | undefined>
+  >;
+}
+
+const LoginPageAsUser: React.FC<LoginPageAsUserProps> = ({
+  setLoggedIn,
+  setUserRole,
+}) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     email: "",
@@ -24,7 +34,6 @@ const LoginAsUser: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
 
-  // Dynamically load Bootstrap for minimal styling
   useEffect(() => {
     const bootstrapCSS = document.createElement("link");
     bootstrapCSS.href =
@@ -53,7 +62,6 @@ const LoginAsUser: React.FC = () => {
     e.preventDefault();
     const { email, password } = formData;
 
-    // Client-side validation
     if (!email || !password) {
       setError("Please fill all required fields");
       toast.error("Please fill all required fields", {
@@ -98,10 +106,12 @@ const LoginAsUser: React.FC = () => {
     setSuccess(false);
 
     try {
+      console.log("Sending user login request:", { email });
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/users/login`,
         { email, password }
       );
+      console.log("User login response:", response.data);
 
       if (response.status === 200 && response.data.token) {
         localStorage.setItem("userToken", response.data.token);
@@ -109,7 +119,10 @@ const LoginAsUser: React.FC = () => {
           "userName",
           response.data.name || response.data.email
         );
+        localStorage.setItem("userRole", response.data.role || "user");
         setSuccess(true);
+        setLoggedIn(true);
+        setUserRole("user");
         setFormData({ email: "", password: "" });
         toast.success("Login successful! Redirecting to homepage...", {
           position: "top-right",
@@ -126,6 +139,7 @@ const LoginAsUser: React.FC = () => {
         throw new Error("Unexpected response from server");
       }
     } catch (err: any) {
+      console.error("User login error:", err.response?.data);
       const message =
         err.response?.data?.message || "Failed to log in. Please try again.";
       setError(message);
@@ -218,4 +232,4 @@ const LoginAsUser: React.FC = () => {
   );
 };
 
-export default LoginAsUser;
+export default LoginPageAsUser;
