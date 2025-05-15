@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./joinQueue.css";
+import { jwtDecode } from "jwt-decode";
 
 interface QueuePerson {
   id: string;
@@ -27,14 +28,25 @@ interface FacilityResponse {
   };
 }
 
-const JoinQueuePage = () => {
-  const [loggedInName, setLoggedInName] = useState<string | null>(null);
+interface JoinQueuePageProps {
+  isLoggedIn: boolean;
+  userName?: string;
+  userId?: string;
+  onLogout?: () => void;
+}
+
+const JoinQueuePage: React.FC<JoinQueuePageProps> = ({
+  isLoggedIn,
+  userName,
+  onLogout,
+}) => {
   const [facilityName, setFacilityName] = useState<string | null>(null);
   const [waitingTime, setWaitingTime] = useState<number>(5);
   const [queue, setQueue] = useState<QueuePerson[]>([]);
   const [peopleInQueue, setPeopleInQueue] = useState<number>(0);
   const [isUserInQueue, setIsUserInQueue] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -42,7 +54,21 @@ const JoinQueuePage = () => {
   const facilityId = queryParams.get("facilityId");
 
   const userToken = localStorage.getItem("userToken");
-  const isLoggedIn = !!userToken;
+
+  // Decode token and set userId
+  useEffect(() => {
+    if (userToken) {
+      try {
+        const decoded: { id: string } = jwtDecode(userToken);
+        setUserId(decoded.id);
+      } catch (err) {
+        console.error("Error decoding token:", err);
+        setError("Invalid token");
+      }
+    } else {
+      setError("No token found");
+    }
+  }, [userToken]);
 
   useEffect(() => {
     if (!facilityId) {
@@ -70,9 +96,7 @@ const JoinQueuePage = () => {
         setQueue(queueData.queue);
         setPeopleInQueue(queueData.peopleInQueue);
         setIsUserInQueue(
-          queueData.queue.some(
-            (person) => person.name === localStorage.getItem("userName")
-          )
+          queueData.queue.some((person) => person.id === userId)
         );
       } catch (err: any) {
         console.error("Error fetching data:", err);
@@ -83,20 +107,17 @@ const JoinQueuePage = () => {
     };
 
     fetchFacilityAndQueue();
-  }, [facilityId, userToken]);
+  }, [facilityId, userToken, userId]);
 
   useEffect(() => {
-    const storedName = localStorage.getItem("userName");
-    if (storedName) {
-      setLoggedInName(storedName);
-    } else if (!isLoggedIn) {
-      navigate("/login");
+    if (!isLoggedIn && location.pathname !== "/user/login") {
+      navigate("/user/login");
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, navigate, location.pathname]);
 
   const handleJoinQueue = async () => {
-    if (!isLoggedIn) {
-      navigate("/login");
+    if (!isLoggedIn || !userToken) {
+      navigate("/user/login");
       return;
     }
 
@@ -123,13 +144,12 @@ const JoinQueuePage = () => {
       const errorMessage =
         err.response?.data?.message || "Failed to join queue";
       setError(errorMessage);
-      // Displays e.g., "User is already in another queue: <facilityName>"
     }
   };
 
   const handleRemoveFromQueue = async () => {
-    if (!isLoggedIn) {
-      navigate("/login");
+    if (!isLoggedIn || !userToken) {
+      navigate("/user/login");
       return;
     }
 
@@ -153,7 +173,14 @@ const JoinQueuePage = () => {
   };
 
   const handleGoBack = () => {
-    navigate("/"); // Redirect to homepage (FacilitiesSection)
+    navigate("/");
+  };
+
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+      navigate("/user/login");
+    }
   };
 
   const estimatedWaitTime = peopleInQueue * waitingTime;
@@ -185,10 +212,7 @@ const JoinQueuePage = () => {
             <label htmlFor="username" className="label-queue">
               Your Name
             </label>
-            <span className="user-name-queue">{loggedInName || "Guest"}</span>
-            <a href="/queue-dashboard" className="dashboard-link-queue">
-              See the dashboard
-            </a>
+            <span className="user-name-queue">{userName || "Guest"}</span>
           </div>
         </div>
 
@@ -206,7 +230,7 @@ const JoinQueuePage = () => {
 
         {!isLoggedIn && (
           <p className="label-queue">
-            <a href="/login" className="login-link-queue">
+            <a href="/user/login" className="login-link-queue">
               Log in
             </a>{" "}
             to join the queue.
@@ -214,55 +238,56 @@ const JoinQueuePage = () => {
         )}
       </div>
 
-      <div className="stats-queue">
-        <div className="stat-card-queue">
-          <div className="stat-label-queue">People in queue</div>
-          <div className="stat-value-queue" id="people_in_queue">
-            {peopleInQueue}
+      <div className="queue-info">
+        <div className="stats-queue">
+          <div className="stat-card-queue">
+            <div className="stat-label-queue">People in queue</div>
+            <div className="stat-value-queue" id="people_in_queue">
+              {peopleInQueue}
+            </div>
+          </div>
+          <div className="stat-card-queue">
+            <div className="stat-label-queue">Estimated wait time</div>
+            <div className="stat-value-queue">
+              <span className="time-to-wait-queue" id="time_to_wait">
+                {estimatedWaitTime}
+              </span>{" "}
+              min
+            </div>
           </div>
         </div>
-        <div className="stat-card-queue">
-          <div className="stat-label-queue">Estimated wait time</div>
-          <div className="stat-value-queue">
-            <span className="time-to-wait-queue" id="time_to_wait">
-              {estimatedWaitTime}
-            </span>{" "}
-            min
-          </div>
-        </div>
-      </div>
 
-      <table id="queueTable" className="table-queue">
-        <thead>
-          <tr className="table-header-queue">
-            <th className="th-queue">Name</th>
-            <th className="th-queue">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="table-body-queue">
-          {queue.map((person) => (
-            <tr
-              key={person.id}
-              className="person-row-queue person-waiting-queue"
-            >
-              <td className="td-queue">{person.name}</td>
-              <td className="td-queue">
-                {loggedInName === person.name && isLoggedIn && (
-                  <button
-                    className="queue-btn-queue"
-                    onClick={handleRemoveFromQueue}
-                  >
-                    Leave
-                  </button>
-                )}
-                {loggedInName !== person.name && (
-                  <span className="label-queue">-</span>
-                )}
-              </td>
+        <table id="queueTable" className="table-queue">
+          <thead>
+            <tr className="table-header-queue">
+              <th className="th-queue">Name</th>
+              <th className="th-queue">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="table-body-queue">
+            {queue.map((person) => (
+              <tr
+                key={person.id}
+                className="person-row-queue person-waiting-queue"
+              >
+                <td className="td-queue">{person.name}</td>
+                <td className="td-queue">
+                  {userId === person.id && isLoggedIn ? (
+                    <button
+                      className="queue-btn-queue"
+                      onClick={handleRemoveFromQueue}
+                    >
+                      Leave
+                    </button>
+                  ) : (
+                    <span className="label-queue">-</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

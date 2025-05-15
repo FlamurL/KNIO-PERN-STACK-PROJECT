@@ -1,16 +1,33 @@
 import React from "react";
+import Navbar from "../components/homePage/navbar";
 import JoinQueuePage from "../components/homePage/QueueManagment/QueueCard";
 
-interface HomePageProps {
+interface QueuePageProps {
   isLoggedIn: boolean;
   userRole?: "user" | "admin";
-  onLogout: () => void;
+  userName?: string;
+  onLogout?: () => void;
 }
 
-const QueuePage: React.FC = () => {
+const QueuePage: React.FC<QueuePageProps> = ({
+  isLoggedIn,
+  userRole,
+  userName,
+  onLogout,
+}) => {
   return (
     <div>
-      <JoinQueuePage />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        userRole={userRole}
+        userName={userName}
+        onLogout={onLogout}
+      />
+      <JoinQueuePage
+        isLoggedIn={isLoggedIn}
+        userName={userName}
+        onLogout={onLogout}
+      />
     </div>
   );
 };

@@ -1,76 +1,200 @@
-/* Scoped styles for LoginForm component */
-.loginForm {
-  font-family: "Cal Sans", sans-serif;
-  height: 100vh;
-  margin: 0;
+/* user-login.css */
+
+/* General Styling */
+.user-login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #e0f7fa,
+    #b3e5fc
+  ); /* Light blue gradient background */
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #333;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.user-login-root {
+  width: 100%;
+  max-width: 450px; /* Slightly smaller max-width for user login */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  background-image: repeating-radial-gradient(
-      circle at 0 0,
-      transparent 0,
-      #e5e5f7 10px
-    ),
-    repeating-linear-gradient(#457efa55, #444cf7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* Form styling */
-.loginForm form {
+.user-login-form-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 40px;
 }
 
-/* Fieldset styling */
-.loginForm fieldset {
-  display: grid;
-  justify-content: center;
-  align-items: center;
-  width: 350px;
-  height: 500px;
-  padding: 10px;
-  border: 0;
-  border-radius: 20px;
-  background-color: rgba(255, 255, 255, 1);
+.user-login-form-container {
+  width: 100%;
 }
 
-/* Heading styling */
-.loginForm h1 {
+/* Form Title */
+.user-login-title {
+  font-size: 2.2em;
+  color: #0d47a1; /* A deeper, calming blue */
   text-align: center;
-  letter-spacing: 2px;
-  color: blue;
+  margin-bottom: 30px;
+  font-weight: 700;
 }
 
-/* Input styling */
-.loginForm input {
-  width: 250px;
-  height: 30px;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  background-color: rgb(243, 241, 241);
+/* Messages (Success, Error, Loading) */
+.user-login-message {
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.user-login-success {
+  background-color: #e8f5e9; /* Light green for success */
+  color: #2e7d32; /* Dark green text */
+  border: 1px solid #c8e6c9;
+}
+
+.user-login-error {
+  background-color: #ffebee; /* Light red for error */
+  color: #d32f2f; /* Dark red text */
+  border: 1px solid #ffcdd2;
+}
+
+.user-login-loading {
+  background-color: #e3f2fd; /* Light blue for loading */
+  color: #1976d2; /* Blue text */
+  border: 1px solid #bbdefb;
+  text-align: center;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Form Elements */
+.user-login-input-group {
+  margin-bottom: 25px;
+}
+
+.user-login-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+  font-size: 0.95em;
+}
+
+.user-login-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid #c8d1da; /* Soft grey border */
+  border-radius: 8px;
+  font-size: 1em;
+  color: #333;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.user-login-input:focus {
+  border-color: #2196f3; /* Blue on focus */
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3); /* Soft blue shadow */
   outline: none;
 }
 
-/* Paragraph styling */
-.loginForm p {
-  color: blue;
-  font-family: "Cal Sans", sans-serif;
-}
-
-/* Button styling */
-.loginForm #logInButton {
-  width: 200px;
-  height: 30px;
-  border-radius: 20px;
-  background-color: blue;
+/* Button Styling */
+.user-login-submit-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #42a5f5; /* A slightly softer blue than admin */
   color: white;
   border: none;
-  font-family: "Cal Sans", sans-serif;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
+  margin-top: 20px;
 }
 
-.loginForm #logInButton:hover {
-  background-color: lightseagreen;
-  cursor: pointer;
+.user-login-submit-button:hover {
+  background-color: #2196f3; /* Darker blue on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.user-login-submit-button:disabled {
+  background-color: #90caf9; /* Lighter blue when disabled */
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Links */
+.user-login-links-group {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.user-login-link {
+  display: block;
+  color: #42a5f5; /* Blue for links */
+  text-decoration: none;
+  font-size: 0.9em;
+  margin-top: 10px;
+  transition: color 0.3s ease;
+}
+
+.user-login-link:hover {
+  color: #2196f3; /* Darker blue on hover */
+  text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(66, 165, 245, 0.4); /* Adjusted pulse color for user login */
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(66, 165, 245, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(66, 165, 245, 0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .user-login-form-wrapper {
+    padding: 20px;
+  }
+
+  .user-login-title {
+    font-size: 1.8em;
+  }
+
+  .user-login-submit-button {
+    font-size: 1em;
+  }
 }

@@ -112,3 +112,50 @@ export const registerUser: RequestHandler = async (
     next(err);
   }
 };
+
+// GET USER BY ID
+export const getUserById: RequestHandler = async (req, res, next) => {
+  try {
+    const db = await getDb();
+    const { id } = req.params; // Assuming ID is passed as a URL parameter (e.g., /users/:id)
+    console.log('Fetching user with ID:', { id });
+
+    if (!id) {
+      res.status(400).json({
+        status: 'error',
+        message: 'User ID is required',
+      });
+      return;
+    }
+
+    const user = await db.Users.findOne({
+      where: { id },
+      attributes: { exclude: ['passwordHash'] }, // Exclude sensitive passwordHash
+    });
+    console.log('User found:', user ? user.get({ plain: true }) : null);
+
+    if (!user) {
+      res.status(404).json({
+        status: 'error',
+        message: 'User not found',
+      });
+      return;
+    }
+
+    res.json({
+      status: 'ok',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        isActive: user.isActive,
+        peopleInQueue: user.peopleInQueue,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+    });
+  } catch (err) {
+    console.error('Error in getUserById:', err);
+    next(err);
+  }
+};

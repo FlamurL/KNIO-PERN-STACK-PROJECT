@@ -1,67 +1,200 @@
-.login-container {
+/* admin-login.css */
+
+/* General Styling */
+.admin-login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: #f4f4f4;
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #e0f2f7,
+    #bbdefb
+  ); /* Light blue gradient background */
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #333;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.login-form {
-  background: white;
-  padding: 2rem;
+.admin-login-root {
+  width: 100%;
+  max-width: 500px; /* Limit width for better readability */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Ensures border-radius applies cleanly */
+}
+
+.admin-login-form-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px; /* Internal padding for the form container */
+}
+
+.admin-login-form-container {
+  width: 100%;
+}
+
+/* Form Title */
+.admin-login-title {
+  font-size: 2.2em;
+  color: #1976d2; /* A strong blue */
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 700;
+}
+
+/* Messages (Success, Error, Loading) */
+.admin-login-message {
+  padding: 15px 20px;
+  margin-bottom: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  font-weight: 500;
+  text-align: center;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.admin-login-success {
+  background-color: #e8f5e9; /* Light green for success */
+  color: #2e7d32; /* Dark green text */
+  border: 1px solid #c8e6c9;
+}
+
+.admin-login-error {
+  background-color: #ffebee; /* Light red for error */
+  color: #d32f2f; /* Dark red text */
+  border: 1px solid #ffcdd2;
+}
+
+.admin-login-loading {
+  background-color: #e3f2fd; /* Light blue for loading */
+  color: #1976d2; /* Blue text */
+  border: 1px solid #bbdefb;
+  text-align: center;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Form Elements */
+.admin-login-input-group {
+  margin-bottom: 25px;
+}
+
+.admin-login-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+  font-size: 0.95em;
+}
+
+.admin-login-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid #c8d1da; /* Soft grey border */
+  border-radius: 8px;
+  font-size: 1em;
+  color: #333;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box; /* Include padding in width */
+}
+
+.admin-login-input:focus {
+  border-color: #2196f3; /* Blue on focus */
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3); /* Soft blue shadow */
+  outline: none;
+}
+
+/* Button Styling */
+.admin-login-submit-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #2196f3; /* Primary blue */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
+  margin-top: 20px;
+}
+
+.admin-login-submit-button:hover {
+  background-color: #1976d2; /* Darker blue on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.admin-login-submit-button:disabled {
+  background-color: #90caf9; /* Lighter blue when disabled */
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Links */
+.admin-login-links-group {
+  margin-top: 25px;
   text-align: center;
 }
 
-h2 {
-  margin-bottom: 1rem;
-}
-
-.input-group {
-  margin-bottom: 1rem;
-  text-align: left;
-}
-
-.input-group label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-.input-group input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.login-btn {
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  border: none;
-  color: white;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.login-btn:hover {
-  background-color: #0056b3;
-}
-
-.signup-link {
-  margin-top: 10px;
-}
-
-.signup-link a {
-  color: #007bff;
+.admin-login-link {
+  display: block; /* Each link on a new line */
+  color: #2196f3; /* Blue for links */
   text-decoration: none;
+  font-size: 0.9em;
+  margin-top: 10px; /* Spacing between links */
+  transition: color 0.3s ease;
 }
 
-.signup-link a:hover {
+.admin-login-link:hover {
+  color: #1976d2; /* Darker blue on hover */
   text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(33, 150, 243, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .admin-login-form-wrapper {
+    padding: 20px;
+  }
+
+  .admin-login-title {
+    font-size: 1.8em;
+  }
+
+  .admin-login-submit-button {
+    font-size: 1em;
+  }
 }

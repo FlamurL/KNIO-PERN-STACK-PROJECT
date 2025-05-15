@@ -1,7 +1,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./signup.css";
+import "./signup.css"; // Changed to user-signup.css
 
 interface FormData {
   name: string;
@@ -80,71 +80,89 @@ const SignUpAsUser: React.FC = () => {
   };
 
   return (
-    <div className="signup-container">
-      <div className="signup-root">
-        <div className="form-container">
-          {success && (
-            <div className="message success">
-              Registration successful! Redirecting to homepage...
-            </div>
-          )}
+    <div className="user-signup-container">
+      <div className="user-signup-root">
+        <div className="user-signup-form-wrapper">
+          <div className="user-signup-form-container">
+            {success && (
+              <div className="user-signup-message user-signup-success">
+                Registration successful! Redirecting to homepage...
+              </div>
+            )}
 
-          {error && <div className="message error">{error}</div>}
+            {error && (
+              <div className="user-signup-message user-signup-error">
+                {error}
+              </div>
+            )}
 
-          {loading && (
-            <div className="loading" aria-live="polite">
-              Processing...
-            </div>
-          )}
+            {loading && (
+              <div className="user-signup-loading" aria-live="polite">
+                Processing...
+              </div>
+            )}
 
-          <form onSubmit={handleSubmit} className="sign-up-form">
-            <h2>Sign Up to QLine</h2>
-            <div className="input-group">
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="input"
-                required
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="input"
-                required
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="input"
-                required
-              />
-            </div>
-            <button type="submit" className="submit-button" disabled={loading}>
-              {loading ? "Submitting..." : "Submit"}
-            </button>
-            <div className="linkss">
-              <Link to="/">Go back to home page</Link>
-            </div>
-            <div className="linkss">
-              <Link to="/user/login">Already have an account? Sign in.</Link>
-            </div>
-          </form>
+            <form onSubmit={handleSubmit} className="user-signup-form">
+              <h2 className="user-signup-title">Sign Up to QLine</h2>
+              <div className="user-signup-input-group">
+                <label htmlFor="name" className="user-signup-label">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="user-signup-input"
+                  required
+                />
+              </div>
+              <div className="user-signup-input-group">
+                <label htmlFor="email" className="user-signup-label">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="user-signup-input"
+                  required
+                />
+              </div>
+              <div className="user-signup-input-group">
+                <label htmlFor="password" className="user-signup-label">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="user-signup-input"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="user-signup-submit-button"
+                disabled={loading}
+              >
+                {loading ? "Submitting..." : "Submit"}
+              </button>
+              <div className="user-signup-links-group">
+                <Link to="/" className="user-signup-link">
+                  Go back to home page
+                </Link>
+                <Link to="/user/login" className="user-signup-link">
+                  Already have an account? Sign in.
+                </Link>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

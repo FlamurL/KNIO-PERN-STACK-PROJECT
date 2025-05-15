@@ -473,7 +473,7 @@ export const getOneAdmin: RequestHandler = async (
       });
       return;
     }
-
+    console.log(admin.zipCode);
     res.json({
       status: 'ok',
       data: {
@@ -799,3 +799,132 @@ export const joinQueue: RequestHandler[] = [
     }
   },
 ];
+
+export const removeAllUsers: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const db = await getDb();
+    const { facilityId } = req.params;
+    console.log('removeAllUsers: Attempt:', { facilityId });
+
+    if (!facilityId) {
+      console.log('removeAllUsers: Missing facilityId');
+      res.status(400).json({
+        status: 'error',
+        message: 'Facility ID is required',
+      });
+      return;
+    }
+
+    // Manual authentication
+    const token = req.headers.authorization?.split('Bearer ')[1];
+    if (!token) {
+      console.log('removeAllUsers: No token provided');
+      res.status(401).json({
+        status: 'error',
+        message: 'Unauthorized: No token provided',
+      });
+      return;
+    }
+
+    let decoded: { id: string; role: string };
+    try {
+      decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || 'your-secret-key'
+      ) as {
+        id: string;
+        role: string;
+      };
+    } catch (err) {
+      console.log('removeAllUsers: Invalid token');
+      res.status(401).json({
+        status: 'error',
+        message: 'Unauthorized: Invalid token',
+      });
+      return;
+    }
+
+    if (decoded.role !== 'admin') {
+      console.log('removeAllUsers: Admin access required');
+      res.status(403).json({
+        status: 'error',
+        message: 'Unauthorized: Admin access required',
+      });
+      return;
+    }
+
+    const adminUser = await db.Admin.findByPk(decoded.id);
+    if (!adminUser) {
+      console.log('removeAllUsers: Admin not found');
+      res.status(404).json({
+        status: 'error',
+        message: 'Admin not found',
+      });
+      return;
+    }
+
+    await db.sequelize.transaction(async (t: Transaction) => {
+      const admin = await db.Admin.findByPk(facilityId, { transaction: t });
+      console.log(
+        'removeAllUsers: Admin found:',
+        admin ? admin.id : 'Not found'
+      );
+      if (!admin || admin.id !== decoded.id) {
+        console.log('removeAllUsers: Unauthorized, not facility owner');
+        res.status(403).json({
+          status: 'error',
+          message: 'Unauthorized: You do not own this facility',
+        });
+        return;
+      }
+
+      // Remove all users from the queue
+      await db.Users.update(
+        { currentQueueId: null },
+        {
+          where: {
+            currentQueueId: facilityId,
+            isActive: true,
+          },
+          transaction: t,
+        }
+      );
+
+      // Reset peopleInQueue
+      await admin.update({ peopleInQueue: 0 }, { transaction: t });
+
+      // Fetch updated queue (should be empty)
+      const users = await db.Users.findAll({
+        where: {
+          currentQueueId: facilityId,
+          isActive: true,
+        },
+        attributes: ['id', 'name'],
+        transaction: t,
+      });
+
+      const queue = users.map((user: UserAttributes) => ({
+        id: user.id,
+        name: user.name || 'Unknown',
+        status: 'waiting' as const,
+      }));
+
+      res.json({
+        status: 'ok',
+        message: 'All users removed from queue successfully',
+        data: {
+          queue,
+          peopleInQueue: 0,
+        },
+      });
+    });
+  } catch (err: any) {
+    console.error('removeAllUsers: Error:', err.message);
+    res.status(500).json({ status: 'error', message: 'Server error' });
+    next(err);
+  }
+};

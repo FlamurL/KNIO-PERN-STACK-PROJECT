@@ -25,7 +25,7 @@ const FacilityCard: React.FC<FacilityCardProps> = ({
     if (isLoggedIn) {
       navigate(`/user/queue?facilityId=${facilityId}`);
     } else {
-      alert("Please sign in to view queue details.");
+      alert("Please sign in as user to view queue details.");
       navigate("/user/login");
     }
   };

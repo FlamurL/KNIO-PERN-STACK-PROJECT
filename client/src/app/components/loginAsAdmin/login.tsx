@@ -67,13 +67,16 @@ const AdminLogin: React.FC<AdminLoginProps> = ({
 
       if (response.status === 200 && response.data.token) {
         localStorage.setItem("adminToken", response.data.token);
-        localStorage.setItem("userName", response.data.name || "Admin");
-        localStorage.setItem("userRole", response.data.role || "admin");
+        // Note: The API response for admin login might not include 'name' or 'role' directly.
+        // If these are important for your app's state, ensure your backend sends them.
+        // For 'userRole', it's explicitly 'admin' here.
+        localStorage.setItem("userName", response.data.email); // Using email as username
+        localStorage.setItem("userRole", "admin");
         localStorage.setItem("facilityId", response.data.facilityId);
         setLoggedIn(true);
         setUserRole("admin");
         setSuccess(true);
-        setFormData({ email: "", password: "", facilityName: "" });
+        setFormData({ email: "", password: "", facilityName: "" }); // Clear form on success
         setTimeout(() => {
           navigate(`/admin/home?facilityId=${response.data.facilityId}`);
         }, 1500);
@@ -95,75 +98,91 @@ const AdminLogin: React.FC<AdminLoginProps> = ({
   };
 
   return (
-    <div className="login-container">
-      <div className="login-root">
-        <div className="form-container">
-          {success && (
-            <div className="message success">
-              Login successful! Redirecting to admin home...
-            </div>
-          )}
+    <div className="admin-login-container">
+      <div className="admin-login-root">
+        <div className="admin-login-form-wrapper">
+          {" "}
+          {/* Added wrapper for centering */}
+          <div className="admin-login-form-container">
+            {success && (
+              <div className="admin-login-message admin-login-success">
+                Login successful! Redirecting to admin home...
+              </div>
+            )}
 
-          {error && <div className="message error">{error}</div>}
+            {error && (
+              <div className="admin-login-message admin-login-error">
+                {error}
+              </div>
+            )}
 
-          {loading.submission && (
-            <div className="loading" aria-live="polite">
-              Processing...
-            </div>
-          )}
+            {loading.submission && (
+              <div className="admin-login-loading" aria-live="polite">
+                Processing...
+              </div>
+            )}
 
-          <form onSubmit={handleSubmit} className="login-form">
-            <h2>Log In to QLine (Admin)</h2>
-            <div className="input-group">
-              <label htmlFor="facilityName">Facility Name</label>
-              <input
-                type="text"
-                id="facilityName"
-                name="facilityName"
-                value={formData.facilityName}
-                onChange={handleChange}
-                className="input"
-                required
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="input"
-                required
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="input"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="submit-button"
-              disabled={loading.submission}
-            >
-              {loading.submission ? "Logging in..." : "Log In"}
-            </button>
-            <div className="linkss">
-              <Link to="/">Go back to home page</Link>
-            </div>
-            <div className="linkss">
-              <Link to="/admin/signup">Need an account? Sign up.</Link>
-            </div>
-          </form>
+            <form onSubmit={handleSubmit} className="admin-login-form">
+              <h2 className="admin-login-title">Log In to QLine (Admin)</h2>
+              <div className="admin-login-input-group">
+                <label htmlFor="facilityName" className="admin-login-label">
+                  Facility Name
+                </label>
+                <input
+                  type="text"
+                  id="facilityName"
+                  name="facilityName"
+                  value={formData.facilityName}
+                  onChange={handleChange}
+                  className="admin-login-input"
+                  required
+                />
+              </div>
+              <div className="admin-login-input-group">
+                <label htmlFor="email" className="admin-login-label">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="admin-login-input"
+                  required
+                />
+              </div>
+              <div className="admin-login-input-group">
+                <label htmlFor="password" className="admin-login-label">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="admin-login-input"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="admin-login-submit-button"
+                disabled={loading.submission}
+              >
+                {loading.submission ? "Logging in..." : "Log In"}
+              </button>
+              <div className="admin-login-links-group">
+                <Link to="/" className="admin-login-link">
+                  Go back to home page
+                </Link>
+                <Link to="/admin/signup" className="admin-login-link">
+                  Need an account? Sign up.
+                </Link>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

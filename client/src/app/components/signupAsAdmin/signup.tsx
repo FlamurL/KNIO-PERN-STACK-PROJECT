@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./signup.css";
+import "./signup.css"; // Changed to admin-signup.css
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -121,19 +121,21 @@ const SignUpAsAdmin: React.FC = () => {
     setFormData((prevData) => ({
       ...prevData,
       country: selectedCountry,
-      city: "",
+      city: "", // Reset city when country changes
     }));
 
+    // If "Macedonia" (MK) is selected, use the static list of Macedonian cities
     if (selectedCountry === "MK") {
       setCities(macedonianCities);
     } else {
+      // For other countries, try to get the capital city from the fetched data
       const selectedCountryData = countries.find(
         (c) => c.iso2 === selectedCountry
       );
       if (selectedCountryData && selectedCountryData.capital) {
-        setCities([selectedCountryData.capital]);
+        setCities([selectedCountryData.capital]); // Only include the capital
       } else {
-        setCities([]);
+        setCities([]); // No cities if capital not found or country not recognized
       }
     }
   };
@@ -152,6 +154,7 @@ const SignUpAsAdmin: React.FC = () => {
       waitingTime,
     } = formData;
 
+    // Basic client-side validation
     if (
       !facilityName ||
       !facilityAddress ||
@@ -162,12 +165,12 @@ const SignUpAsAdmin: React.FC = () => {
       !password ||
       waitingTime <= 0
     ) {
-      setError("Please fill all required fields with valid values");
+      setError("Please fill all required fields with valid values.");
       return;
     }
 
     if (!email.includes("@")) {
-      setError("Invalid email format");
+      setError("Invalid email format.");
       return;
     }
 
@@ -193,6 +196,7 @@ const SignUpAsAdmin: React.FC = () => {
 
       if (response.status === 201 && response.data.status === "ok") {
         setSuccess(true);
+        // Clear form data after successful submission
         setFormData({
           facilityName: "",
           facilityAddress: "",
@@ -203,12 +207,12 @@ const SignUpAsAdmin: React.FC = () => {
           password: "",
           waitingTime: 0,
         });
-        setCities([]);
+        setCities([]); // Clear cities as well
         setTimeout(() => {
-          navigate("/");
+          navigate("/"); // Redirect to home or login page after a delay
         }, 1500);
       } else {
-        throw new Error("Unexpected response from server");
+        throw new Error("Unexpected response from server.");
       }
     } catch (err: any) {
       if (axios.isAxiosError(err) && err.response) {
@@ -225,150 +229,173 @@ const SignUpAsAdmin: React.FC = () => {
   };
 
   return (
-    <div className="signup-container">
-      <div className="signup-root">
-        <div className="form-container">
-          {success && (
-            <div className="message success">
-              Registration successful! Redirecting to homepage...
-            </div>
-          )}
+    <div className="admin-signup-container">
+      <div className="admin-signup-root">
+        <div className="admin-signup-form-wrapper">
+          <div className="admin-signup-form-container">
+            {success && (
+              <div className="admin-signup-message admin-signup-success">
+                Registration successful! Redirecting to homepage...
+              </div>
+            )}
 
-          {error && <div className="message error">{error}</div>}
+            {error && (
+              <div className="admin-signup-message admin-signup-error">
+                {error}
+              </div>
+            )}
 
-          {(loading.countries || loading.submission) && (
-            <div className="loading" aria-live="polite">
-              {loading.countries ? "Loading countries..." : "Processing..."}
-            </div>
-          )}
+            {(loading.countries || loading.submission) && (
+              <div className="admin-signup-loading" aria-live="polite">
+                {loading.countries ? "Loading countries..." : "Processing..."}
+              </div>
+            )}
 
-          <form onSubmit={handleSubmit} className="sign-up-form">
-            <h2>Sign Up To QLine</h2>
-            <div className="input-group">
-              <label htmlFor="facilityName">Facility Name</label>
-              <input
-                type="text"
-                id="facilityName"
-                name="facilityName"
-                value={formData.facilityName}
-                onChange={handleChange}
-                className="input"
-                required
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="facilityAddress">Facility Address</label>
-              <input
-                type="text"
-                id="facilityAddress"
-                name="facilityAddress"
-                value={formData.facilityAddress}
-                onChange={handleChange}
-                className="input"
-                required
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="zipCode">Zip Code</label>
-              <input
-                type="text"
-                id="zipCode"
-                name="zipCode"
-                value={formData.zipCode}
-                onChange={handleChange}
-                className="input"
-                required
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="country">Country</label>
-              <select
-                id="country"
-                name="country"
-                value={formData.country}
-                onChange={handleCountryChange}
-                className="input"
-                required
+            <form onSubmit={handleSubmit} className="admin-signup-form">
+              <h2 className="admin-signup-title">Sign Up As Admin</h2>
+              <div className="admin-signup-input-group">
+                <label htmlFor="facilityName" className="admin-signup-label">
+                  Facility Name
+                </label>
+                <input
+                  type="text"
+                  id="facilityName"
+                  name="facilityName"
+                  value={formData.facilityName}
+                  onChange={handleChange}
+                  className="admin-signup-input"
+                  required
+                />
+              </div>
+              <div className="admin-signup-input-group">
+                <label htmlFor="facilityAddress" className="admin-signup-label">
+                  Facility Address
+                </label>
+                <input
+                  type="text"
+                  id="facilityAddress"
+                  name="facilityAddress"
+                  value={formData.facilityAddress}
+                  onChange={handleChange}
+                  className="admin-signup-input"
+                  required
+                />
+              </div>
+              <div className="admin-signup-input-group">
+                <label htmlFor="zipCode" className="admin-signup-label">
+                  Zip Code
+                </label>
+                <input
+                  type="text"
+                  id="zipCode"
+                  name="zipCode"
+                  value={formData.zipCode}
+                  onChange={handleChange}
+                  className="admin-signup-input"
+                  required
+                />
+              </div>
+              <div className="admin-signup-input-group">
+                <label htmlFor="country" className="admin-signup-label">
+                  Country
+                </label>
+                <select
+                  id="country"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleCountryChange}
+                  className="admin-signup-input admin-signup-select"
+                  required
+                >
+                  <option value="">Select a country</option>
+                  {countries.map((country) => (
+                    <option key={country.iso2} value={country.iso2}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="admin-signup-input-group">
+                <label htmlFor="city" className="admin-signup-label">
+                  City
+                </label>
+                <select
+                  id="city"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  className="admin-signup-input admin-signup-select"
+                  required
+                  disabled={!formData.country || cities.length === 0}
+                >
+                  <option value="">Select a city</option>
+                  {cities.map((city, index) => (
+                    <option key={index} value={city}>
+                      {city}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="admin-signup-input-group">
+                <label htmlFor="email" className="admin-signup-label">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="admin-signup-input"
+                  required
+                />
+              </div>
+              <div className="admin-signup-input-group">
+                <label htmlFor="password" className="admin-signup-label">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="admin-signup-input"
+                  required
+                />
+              </div>
+              <div className="admin-signup-input-group">
+                <label htmlFor="waitingTime" className="admin-signup-label">
+                  Time needed for person (minutes)
+                </label>
+                <input
+                  type="number"
+                  id="waitingTime"
+                  name="waitingTime"
+                  value={formData.waitingTime}
+                  onChange={handleChange}
+                  className="admin-signup-input"
+                  min="1"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="admin-signup-submit-button"
+                disabled={loading.submission || loading.countries}
               >
-                <option value="">Select a country</option>
-                {countries.map((country) => (
-                  <option key={country.iso2} value={country.iso2}>
-                    {country.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="input-group">
-              <label htmlFor="city">City</label>
-              <select
-                id="city"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                className="input"
-                required
-              >
-                <option value="">Select a city</option>
-                {cities.map((city, index) => (
-                  <option key={index} value={city}>
-                    {city}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="input-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="input"
-                required
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="input"
-                required
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="waitingTime">
-                Time needed for person (minutes)
-              </label>
-              <input
-                type="number"
-                id="waitingTime"
-                name="waitingTime"
-                value={formData.waitingTime}
-                onChange={handleChange}
-                className="input"
-                min="1"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="submit-button"
-              disabled={loading.submission}
-            >
-              {loading.submission ? "Submitting..." : "Submit"}
-            </button>
-            <div className="linkss">
-              <Link to="/">Go back to home page</Link>
-            </div>
-            <div className="linkss">
-              <Link to="/admin/login">Already have an account? Sign in.</Link>
-            </div>
-          </form>
+                {loading.submission ? "Submitting..." : "Submit"}
+              </button>
+              <div className="admin-signup-links-group">
+                <Link to="/" className="admin-signup-link">
+                  Go back to home page
+                </Link>
+                <Link to="/admin/login" className="admin-signup-link">
+                  Already have an account? Sign in.
+                </Link>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

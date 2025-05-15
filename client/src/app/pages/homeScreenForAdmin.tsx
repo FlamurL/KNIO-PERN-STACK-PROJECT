@@ -1,12 +1,29 @@
 import React from "react";
 import AdminFacilityPage from "../components/homePage/AdminFacilityPage/adminFacilityPage";
 
-const HomePageForAdmin: React.FC = () => {
+interface HomePageForAdminProps {
+  isLoggedIn: boolean;
+  userRole?: "user" | "admin";
+  userName?: string;
+  onLogout?: () => void;
+}
+
+const HomePageForAdmin: React.FC<HomePageForAdminProps> = ({
+  isLoggedIn,
+  userRole,
+  userName,
+  onLogout,
+}) => {
   return (
     <div>
-      <AdminFacilityPage />
+      <AdminFacilityPage
+        isLoggedIn={isLoggedIn}
+        userRole={userRole}
+        userName={userName}
+        onLogout={onLogout}
+      />
     </div>
   );
 };
 
-export default AdminFacilityPage;
+export default HomePageForAdmin;

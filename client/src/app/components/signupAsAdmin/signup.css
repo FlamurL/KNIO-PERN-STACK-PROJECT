@@ -1,177 +1,211 @@
-/* Reset default styles (keep if needed, but consider scoping) */
-* {
-  margin: 0;
-  padding: 0;
+/* admin-signup.css */
+
+/* General Styling */
+.admin-signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #e0f2f7,
+    #bbdefb
+  ); /* Light blue gradient background */
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #333;
+  padding: 20px;
   box-sizing: border-box;
 }
 
-/* Signup-specific container */
-.signup-container {
-  font-family: "Cal Sans", sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh; /* Use min-height to allow content to expand */
-  background-color: #ffffff;
-  background-image: repeating-radial-gradient(
-      circle at 0 0,
-      transparent 0,
-      #ffffff 26px
-    ),
-    repeating-linear-gradient(#4095d655, #a1d2f7);
-}
-
-/* Root-like container for the form */
-.signup-root {
-  background-color: white;
-  padding: 10px;
-  border: 5px solid lightblue;
-  border-radius: 20px;
-  width: 400px;
-  height: auto;
-  display: grid;
-  justify-content: center;
-  align-items: center;
-  opacity: 1;
-}
-
-/* Form container styling */
-.form-container {
+.admin-signup-root {
   width: 100%;
-  max-width: 400px;
-  padding: 20px;
-  border-radius: 10px;
-  display: grid;
+  max-width: 600px; /* Wider for more input fields */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.admin-signup-form-wrapper {
+  display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
+  padding: 40px;
 }
 
-/* Input group styling */
-.input-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
+.admin-signup-form-container {
+  width: 100%;
 }
 
-/* Heading styling */
-h2 {
+/* Form Title */
+.admin-signup-title {
+  font-size: 2.5em; /* Slightly larger title */
+  color: #1976d2; /* A strong blue */
   text-align: center;
-  color: blue;
+  margin-bottom: 30px;
+  font-weight: 700;
+}
+
+/* Messages (Success, Error, Loading) */
+.admin-signup-message {
+  padding: 15px 20px;
   margin-bottom: 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* Label Styling */
-label {
+.admin-signup-success {
+  background-color: #e8f5e9; /* Light green for success */
+  color: #2e7d32; /* Dark green text */
+  border: 1px solid #c8e6c9;
+}
+
+.admin-signup-error {
+  background-color: #ffebee; /* Light red for error */
+  color: #d32f2f; /* Dark red text */
+  border: 1px solid #ffcdd2;
+}
+
+.admin-signup-loading {
+  background-color: #e3f2fd; /* Light blue for loading */
+  color: #1976d2; /* Blue text */
+  border: 1px solid #bbdefb;
+  text-align: center;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Form Elements */
+.admin-signup-input-group {
+  margin-bottom: 20px; /* Slightly less space for more fields */
+}
+
+.admin-signup-label {
   display: block;
-  font-size: 1rem;
-  color: blue;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+  font-size: 0.95em;
 }
 
-/* Input and Select field styling */
-.input {
-  width: 250px;
-  height: 30px;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  background-color: rgb(243, 241, 241);
-  margin-bottom: 10px;
-  padding-right: 30px;
+.admin-signup-input,
+.admin-signup-select {
+  /* Apply styles to both input and select */
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid #c8d1da; /* Soft grey border */
+  border-radius: 8px;
+  font-size: 1em;
+  color: #333;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+  background-color: #fff; /* Ensure select has white background */
+}
+
+.admin-signup-input:focus,
+.admin-signup-select:focus {
+  border-color: #2196f3; /* Blue on focus */
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3); /* Soft blue shadow */
   outline: none;
-  font-family: "Cal Sans", sans-serif;
 }
 
-.input:focus {
-  border-color: #3498db;
-}
-
-/* Password Input Font Family */
-input[type="password"] {
-  font-family: sans-serif;
-}
-
-/* Button styling */
-.submit-button {
-  font-family: "Cal Sans", sans-serif;
-  margin-top: 20px;
-  width: 200px;
-  height: 30px;
-  border-radius: 20px;
-  background-color: blue;
+/* Button Styling */
+.admin-signup-submit-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #2196f3; /* Primary blue */
   color: white;
   border: none;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-left: 20px;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.submit-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.submit-button:hover:not(:disabled) {
-  background-color: grey;
-}
-
-/* Success and Error Message Styling */
-.message {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 1rem;
-  padding: 10px;
   border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
+  margin-top: 25px; /* More space above button */
 }
 
-.success {
-  background-color: #d4edda;
-  color: #155724;
+.admin-signup-submit-button:hover {
+  background-color: #1976d2; /* Darker blue on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.error {
-  background-color: #f8d7da;
-  color: #721c24;
+.admin-signup-submit-button:disabled {
+  background-color: #90caf9; /* Lighter blue when disabled */
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-/* Loading Text */
-.loading {
+/* Links */
+.admin-signup-links-group {
+  margin-top: 25px;
   text-align: center;
-  font-size: 16px;
-  color: #3498db;
 }
 
-/* Responsive Design */
+.admin-signup-link {
+  display: block;
+  color: #2196f3; /* Blue for links */
+  text-decoration: none;
+  font-size: 0.9em;
+  margin-top: 10px;
+  transition: color 0.3s ease;
+}
+
+.admin-signup-link:hover {
+  color: #1976d2; /* Darker blue on hover */
+  text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(33, 150, 243, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
+  }
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
-  .form-container {
-    width: 90%;
+  .admin-signup-root {
+    max-width: 90%;
+  }
+  .admin-signup-title {
+    font-size: 2em;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-signup-form-wrapper {
     padding: 20px;
   }
-
-  h2 {
-    font-size: 2rem;
+  .admin-signup-title {
+    font-size: 1.8em;
   }
-
-  .submit-button {
-    font-size: 1rem;
-    width: 100%;
+  .admin-signup-submit-button {
+    font-size: 1em;
   }
-}
-
-@media (max-width: 767.98px) {
-  .submit-button {
-    width: 170px;
-    height: 30px;
-    margin-left: 35px;
-    margin-top: 5px;
-    margin-bottom: 20px;
-  }
-}
-.linkss {
-  text-align: center;
-  margin-top: 5px;
 }

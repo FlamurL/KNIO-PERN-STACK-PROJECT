@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 interface NavbarProps {
   isLoggedIn: boolean;
-  userRole?: "user" | "admin"; // Optional: Indicate user role
+  userRole?: "user" | "admin";
+  userName?: string;
   onLogout?: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, userRole, onLogout }) => {
+const Navbar: React.FC<NavbarProps> = ({
+  isLoggedIn,
+  userRole,
+  userName,
+  onLogout,
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const toggleNavbar = () => setIsOpen(!isOpen);
@@ -34,19 +40,13 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, userRole, onLogout }) => {
           id="navbarNav"
         >
           <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "active" : ""}`
-                }
-                to={
-                  userRole === "admin" ? "/admin/dashboard" : "/user/dashboard"
-                }
-                onClick={closeNavbar}
-              >
-                Dashboard
-              </NavLink>
-            </li>
+            {userRole === "user" && (
+              <li className="nav-item">
+                <span className="nav-link text-white">
+                  {userName || "User"}
+                </span>
+              </li>
+            )}
             {onLogout && (
               <li className="nav-item">
                 <button

@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./login.css";
+import "./login.css"; // Change to user-login.css
 
 interface FormData {
   email: string;
@@ -19,11 +19,13 @@ interface LoginPageAsUserProps {
   setUserRole: React.Dispatch<
     React.SetStateAction<"user" | "admin" | undefined>
   >;
+  setUserName: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const LoginPageAsUser: React.FC<LoginPageAsUserProps> = ({
   setLoggedIn,
   setUserRole,
+  setUserName,
 }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
@@ -34,24 +36,8 @@ const LoginPageAsUser: React.FC<LoginPageAsUserProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
 
-  useEffect(() => {
-    const bootstrapCSS = document.createElement("link");
-    bootstrapCSS.href =
-      "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
-    bootstrapCSS.rel = "stylesheet";
-    document.head.appendChild(bootstrapCSS);
-
-    const bootstrapJS = document.createElement("script");
-    bootstrapJS.src =
-      "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js";
-    bootstrapJS.async = true;
-    document.body.appendChild(bootstrapJS);
-
-    return () => {
-      document.head.removeChild(bootstrapCSS);
-      document.body.removeChild(bootstrapJS);
-    };
-  }, []);
+  // Removed Bootstrap CDN links from here as they are usually handled globally
+  // or by a build tool for a cleaner component
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -88,19 +74,6 @@ const LoginPageAsUser: React.FC<LoginPageAsUserProps> = ({
       return;
     }
 
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters long");
-      toast.error("Password must be at least 8 characters long", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
-      return;
-    }
-
     setLoading((prev) => ({ ...prev, submission: true }));
     setError(null);
     setSuccess(false);
@@ -115,14 +88,13 @@ const LoginPageAsUser: React.FC<LoginPageAsUserProps> = ({
 
       if (response.status === 200 && response.data.token) {
         localStorage.setItem("userToken", response.data.token);
-        localStorage.setItem(
-          "userName",
-          response.data.name || response.data.email
-        );
+        const name = response.data.name || response.data.email;
+        localStorage.setItem("userName", name);
         localStorage.setItem("userRole", response.data.role || "user");
         setSuccess(true);
         setLoggedIn(true);
         setUserRole("user");
+        setUserName(name);
         setFormData({ email: "", password: "" });
         toast.success("Login successful! Redirecting to homepage...", {
           position: "top-right",
@@ -158,76 +130,77 @@ const LoginPageAsUser: React.FC<LoginPageAsUserProps> = ({
 
   return (
     <>
-      <div className="login-container">
-        <div className="login-root">
-          <div className="form-container">
-            {success && (
-              <div className="message success">
-                Login successful! Redirecting to homepage...
-              </div>
-            )}
-            {error && <div className="message error">{error}</div>}
-            {loading.submission && (
-              <div className="loading" aria-live="polite">
-                Processing...
-              </div>
-            )}
-            <form onSubmit={handleSubmit} className="login-form">
-              <h2>Log In to QLine</h2>
-              <div className="input-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="input"
-                  required
+      <div className="user-login-container">
+        <div className="user-login-root">
+          <div className="user-login-form-wrapper">
+            <div className="user-login-form-container">
+              {success && (
+                <div className="user-login-message user-login-success">
+                  Login successful! Redirecting to homepage...
+                </div>
+              )}
+              {error && (
+                <div className="user-login-message user-login-error">
+                  {error}
+                </div>
+              )}
+              {loading.submission && (
+                <div className="user-login-loading" aria-live="polite">
+                  Processing...
+                </div>
+              )}
+              <form onSubmit={handleSubmit} className="user-login-form">
+                <h2 className="user-login-title">Log In to QLine</h2>
+                <div className="user-login-input-group">
+                  <label htmlFor="email" className="user-login-label">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="user-login-input"
+                    required
+                    disabled={loading.submission}
+                  />
+                </div>
+                <div className="user-login-input-group">
+                  <label htmlFor="password" className="user-login-label">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="user-login-input"
+                    required
+                    disabled={loading.submission}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="user-login-submit-button"
                   disabled={loading.submission}
-                />
-              </div>
-              <div className="input-group">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="input"
-                  required
-                  disabled={loading.submission}
-                />
-              </div>
-              <button
-                type="submit"
-                className="submit-button"
-                disabled={loading.submission}
-              >
-                {loading.submission ? "Logging in..." : "Log In"}
-              </button>
-              <div className="linkss">
-                <Link to="/">Go back to home page</Link>
-              </div>
-              <div className="linkss">
-                <Link to="/user/signup">Need an account? Sign up.</Link>
-              </div>
-            </form>
+                >
+                  {loading.submission ? "Logging in..." : "Log In"}
+                </button>
+                <div className="user-login-links-group">
+                  <Link to="/" className="user-login-link">
+                    Go back to home page
+                  </Link>
+                  <Link to="/user/signup" className="user-login-link">
+                    Need an account? Sign up.
+                  </Link>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
     </>
   );
 };

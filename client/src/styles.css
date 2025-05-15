@@ -241,3 +241,12 @@ section:where(.in-view) {
   color: #fff;
   text-decoration: none;
 }
+
+.adminfacqueue {
+  margin-left: 40%;
+}
+@media (max-width: 767.98px) {
+  .adminfacqueue {
+    margin-left: 20%;
+  }
+}

@@ -35,26 +35,29 @@ const ProtectedAdminRoute: React.FC<ProtectedAdminRouteProps> = ({
 
   return adminToken && userRole === "admin" ? children : null;
 };
+
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState<"user" | "admin" | undefined>(
     undefined
   );
+  const [userName, setUserName] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     // Check for tokens on mount to set initial login state
     const userToken = localStorage.getItem("userToken");
     const adminToken = localStorage.getItem("adminToken");
+    const name = localStorage.getItem("userName");
+    const role = localStorage.getItem("userRole") as "user" | "admin" | null;
 
-    if (userToken) {
+    if (userToken || adminToken) {
       setIsLoggedIn(true);
-      setUserRole("user");
-    } else if (adminToken) {
-      setIsLoggedIn(true);
-      setUserRole("admin");
+      setUserRole(role || undefined);
+      setUserName(name || undefined);
     } else {
       setIsLoggedIn(false);
       setUserRole(undefined);
+      setUserName(undefined);
     }
   }, []);
 
@@ -66,6 +69,7 @@ const App: React.FC = () => {
     localStorage.removeItem("facilityId");
     setIsLoggedIn(false);
     setUserRole(undefined);
+    setUserName(undefined);
   };
 
   return (
@@ -77,6 +81,7 @@ const App: React.FC = () => {
             <HomePage
               isLoggedIn={isLoggedIn}
               userRole={userRole}
+              userName={userName}
               onLogout={handleLogout}
             />
           }
@@ -97,16 +102,32 @@ const App: React.FC = () => {
             <LoginPageAsUser
               setLoggedIn={setIsLoggedIn}
               setUserRole={setUserRole}
+              setUserName={setUserName}
             />
           }
         />
         <Route path="/user/signup" element={<SignUpPageAsUser />} />
-        <Route path="/user/queue" element={<QueuePage />} />
+        <Route
+          path="/user/queue"
+          element={
+            <QueuePage
+              isLoggedIn={isLoggedIn}
+              userRole={userRole}
+              userName={userName}
+              onLogout={handleLogout}
+            />
+          }
+        />
         <Route
           path="/admin/home"
           element={
             <ProtectedAdminRoute>
-              <HomePageForAdmin />
+              <HomePageForAdmin
+                isLoggedIn={isLoggedIn}
+                userRole={userRole}
+                userName={userName}
+                onLogout={handleLogout}
+              />
             </ProtectedAdminRoute>
           }
         />
